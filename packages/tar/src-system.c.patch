@@ -12,7 +12,7 @@ diff -u -r ../tar-1.29/src/system.c ./src/system.c
    argv[3] = NULL;
  
 -  execv ("/bin/sh", argv);
-+  execv ("@TERMUX_PREFIX@/bin/sh", argv);
++  execv ("/system/bin/sh", argv);
    exec_fatal (cmd);
  }
  
@@ -21,7 +21,7 @@ diff -u -r ../tar-1.29/src/system.c ./src/system.c
    const char *shell = getenv ("SHELL");
    if (! shell)
 -    shell = "/bin/sh";
-+    shell = "@TERMUX_PREFIX@/bin/sh";
++    shell = "/system/bin/sh";
    child = xfork ();
    if (child == 0)
      {
