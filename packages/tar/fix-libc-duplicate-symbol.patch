@@ -1,0 +1,52 @@
+diff --git a/gnu/time_rz.c b/gnu/time_rz.c
+index da0d57b..989eafa 100644
+--- a/gnu/time_rz.c
++++ b/gnu/time_rz.c
+@@ -62,7 +62,7 @@ extend_abbrs (char *abbrs, char const *abbr, size_t abbr_size)
+ /* Return a newly allocated time zone for NAME, or NULL on failure.
+    A null NAME stands for wall clock time (which is like unset TZ).  */
+ timezone_t
+-tzalloc (char const *name)
++_gnu_tzalloc (char const *name)
+ {
+   size_t name_size = name ? strlen (name) + 1 : 0;
+   size_t abbr_size = name_size < ABBR_SIZE_MIN ? ABBR_SIZE_MIN : name_size + 1;
+@@ -157,7 +157,7 @@ save_abbr (timezone_t tz, struct tm *tm)
+ 
+ /* Free a time zone.  */
+ void
+-tzfree (timezone_t tz)
++_gnu_tzfree (timezone_t tz)
+ {
+   if (tz != local_tz)
+     while (tz)
+@@ -248,7 +248,7 @@ revert_tz (timezone_t tz)
+ 
+ /* Use time zone TZ to compute localtime_r (T, TM).  */
+ struct tm *
+-localtime_rz (timezone_t tz, time_t const *t, struct tm *tm)
++_gnu_localtime_rz (timezone_t tz, time_t const *t, struct tm *tm)
+ {
+ #ifdef HAVE_LOCALTIME_INFLOOP_BUG
+   /* The -67768038400665599 comes from:
+@@ -282,7 +282,7 @@ localtime_rz (timezone_t tz, time_t const *t, struct tm *tm)
+ 
+ /* Use time zone TZ to compute mktime (TM).  */
+ time_t
+-mktime_z (timezone_t tz, struct tm *tm)
++_gnu_mktime_z (timezone_t tz, struct tm *tm)
+ {
+   if (!tz)
+     return timegm (tm);
+@@ -314,3 +314,11 @@ mktime_z (timezone_t tz, struct tm *tm)
+       return -1;
+     }
+ }
++timezone_t
++tzalloc (char const *name) __attribute__((alias("_gnu_tzalloc")));
++void
++tzfree (timezone_t tz) __attribute__((alias("_gnu_tzfree")));
++struct tm *
++localtime_rz (timezone_t tz, time_t const *t, struct tm *tm) __attribute__((alias("_gnu_localtime_rz")));
++time_t
++mktime_z (timezone_t tz, struct tm *tm) __attribute__((alias("_gnu_mktime_z")));
